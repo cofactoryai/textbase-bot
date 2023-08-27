@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import Helmet from 'react-helmet';
+import {Helmet, HelmetProvider} from 'react-helmet-async';
 import './App.css';
 import InputBar from './components/inputBar';
 import MessageBox from './components/messageBox';
@@ -39,7 +39,6 @@ function App() {
   useEffect(()=>{
     const path = window.location.pathname
     const pathParts = path.split('/')
-    console.log(pathParts)
     if(pathParts[1] !== ""){
       const botId = Number(atob(pathParts[1]))
       if(!isNaN(botId)){
@@ -113,11 +112,16 @@ function App() {
 
   return (
     <div className='flex justify-center'>
-      {botName && botId &&<Helmet>
-        <title>Bot - {botName}</title>
-        <link rel="apple-touch-icon" href={`${botId % 5}.png`} />
-        <link rel="icon" href={`${botId % 5}.ico`} />
-      </Helmet>}
+      {botName && botId &&
+      
+        <HelmetProvider>
+          <Helmet>
+            <title>Bot - {botName}</title>
+            <link rel="apple-touch-icon" href={`avatars/${botId % 5}.png`} />
+            <link rel="icon" href={`favicons/${botId % 5}.ico`} />
+          </Helmet>
+        </HelmetProvider>
+      }
       <div className='w-full md:max-w-screen-md h-screen border rounded-2xl justify-between flex flex-col mb-2'>
         <Header botName={botName} status={botStatus} restart={restart} error={botError} botId={botId} />
         <MessageBox messages={messages} loading={fetching} error={error} botInfoMessage={botInfo} />

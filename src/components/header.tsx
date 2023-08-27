@@ -10,7 +10,6 @@ interface IProps {
 export default function Header({botName, status, restart, error, botId}: IProps){
     const [showSettings, setShowSettings] = useState(false);
     const [online, setOnline] = useState(false);
-    console.log(showSettings)
     
     useEffect(()=>{
         if(status.toUpperCase() === 'DEPLOYED' || status.toUpperCase() === 'ACTIVE'){
@@ -19,8 +18,6 @@ export default function Header({botName, status, restart, error, botId}: IProps)
             setOnline(false)
         }
     }, [status])
-
-    console.log(online)
 
     return (
         <div className="h-20 rounded-t-2xl py-4 px-2">
@@ -31,7 +28,7 @@ export default function Header({botName, status, restart, error, botId}: IProps)
                     </div>
                     {!error && <div className="flex items-center">
                         <div className="relative">
-                            <img src={`${(botId || 10)%5}.png`} className="rounded-full border" width='40px' height='40px' />
+                            <img src={`avatars/${(botId || 10)%5}.png`} className="rounded-full border" width='40px' height='40px' />
                             <div className={`border rounded-full h-2 w-2 absolute bottom-0 right-0 ${online ? 'border-green-500 bg-green-500': 'border-red-500 bg-red-500'}`} />
                         </div>
                         <span className="font-bold text-base mx-2">{botName.toUpperCase()}</span>

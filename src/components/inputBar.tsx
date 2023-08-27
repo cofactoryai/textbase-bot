@@ -11,7 +11,6 @@ export default function InputBar({onMessage, botName}: IProps){
     const [value, setValue] = useState('');
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>)=>{
-        console.log("Triggered")
         setValue(e.target.value)
     }
 
