@@ -3,11 +3,13 @@ import { IMessage } from "../types/message"
 import Bubble from "./messageBox/bubble"
 import Loader from "./messageBox/loader"
 import ErrorBubble from "./messageBox/errorBubble"
+import BotInfo from "./messageBox/botInfo"
 
 interface IProps {
     messages:IMessage[]
     loading: boolean
     error: string | null
+    botInfoMessage: string
 }
 
 function Message(message: IMessage){
@@ -16,7 +18,7 @@ function Message(message: IMessage){
     })
 }
 
-export default function MessageBox({messages, loading, error}: IProps){
+export default function MessageBox({messages, loading, error, botInfoMessage}: IProps){
     const elementRef = useRef<null | HTMLDivElement>(null);
 
     useEffect(()=>{
@@ -30,6 +32,7 @@ export default function MessageBox({messages, loading, error}: IProps){
                     return Message(message)
                 })
             }
+            {messages.length === 0 && <BotInfo infoMessage={botInfoMessage} />}
             {loading && <Loader />}
             {error && <ErrorBubble error={error} />}
             <div ref={elementRef} />
