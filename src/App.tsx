@@ -28,7 +28,7 @@ function generateRandomMessage(n:number): IMessage[]{
 function App() {
   const [botState, setBotState] = useState({});
   const [messages, setMessages] = useState<IMessage[]>([]);
-  const [botName, setBotName] = useState('Textbase')
+  const [botName, setBotName] = useState('')
   const [botId, setBotId] = useState<number | null>(null)
   const [botStatus, setBotStatus] = useState('')
   const [fetching, setFetching] = useState(false);
@@ -115,8 +115,8 @@ function App() {
     <div className='flex justify-center'>
       {botName && botId &&<Helmet>
         <title>Bot - {botName}</title>
-        <link rel="apple-touch-icon" href={`%PUBLIC_URL%/${botId % 5}.png`} />
-        <link rel="icon" href={`%PUBLIC_URL%/${botId % 5}.ico`} />
+        <link rel="apple-touch-icon" href={`${botId % 5}.png`} />
+        <link rel="icon" href={`${botId % 5}.ico`} />
       </Helmet>}
       <div className='w-full md:max-w-screen-md h-screen border rounded-2xl justify-between flex flex-col mb-2'>
         <Header botName={botName} status={botStatus} restart={restart} error={botError} botId={botId} />
