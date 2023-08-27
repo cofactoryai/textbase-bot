@@ -29,8 +29,8 @@ function App() {
   const [botState, setBotState] = useState({});
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [botName, setBotName] = useState('Textbase')
-  const [botId, setBotId] = useState<number>(146)
-  const [botStatus, setBotStatus] = useState('ACTIVE')
+  const [botId, setBotId] = useState<number | null>(null)
+  const [botStatus, setBotStatus] = useState('')
   const [fetching, setFetching] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [botError, setBotError] = useState<string | null>(null);
@@ -52,7 +52,7 @@ function App() {
             if(resp.data){
               if(resp.data.data){
                 setBotName(resp.data.data.name)
-                setBotStatus(resp.data.data.status);
+                setBotStatus(resp.data.data.state);
               }else{
                 setBotError(resp.data.error)
                 setBotStatus('INDETERMINATE');
@@ -113,13 +113,13 @@ function App() {
 
   return (
     <div className='flex justify-center'>
-      <Helmet>
+      {botName && botId &&<Helmet>
         <title>Bot - {botName}</title>
         <link rel="apple-touch-icon" href={`%PUBLIC_URL%/${botId % 5}.png`} />
         <link rel="icon" href={`%PUBLIC_URL%/${botId % 5}.ico`} />
-      </Helmet>
+      </Helmet>}
       <div className='w-full md:max-w-screen-md h-screen border rounded-2xl justify-between flex flex-col mb-2'>
-        <Header botName={botName} status={botStatus} restart={restart} error={botError} />
+        <Header botName={botName} status={botStatus} restart={restart} error={botError} botId={botId} />
         <MessageBox messages={messages} loading={fetching} error={error} botInfoMessage={botInfo} />
         <InputBar onMessage={onMessage} botName={botName} />
       </div>

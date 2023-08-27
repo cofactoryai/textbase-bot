@@ -1,14 +1,27 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface IProps {
     botName: string
+    botId: number | null
     status: string
     restart: ()=>void
     error: string | null
 }
-export default function Header({botName, status, restart, error}: IProps){
+export default function Header({botName, status, restart, error, botId}: IProps){
     const [showSettings, setShowSettings] = useState(false);
+    const [online, setOnline] = useState(false);
     console.log(showSettings)
+    
+    useEffect(()=>{
+        if(status.toUpperCase() === 'DEPLOYED' || status.toUpperCase() === 'ACTIVE'){
+            setOnline(true)
+        }else{
+            setOnline(false)
+        }
+    }, [status])
+
+    console.log(online)
+
     return (
         <div className="h-20 rounded-t-2xl py-4 px-2">
             <div className="flex justify-between">
@@ -16,18 +29,19 @@ export default function Header({botName, status, restart, error}: IProps){
                     <div>
                         <p className="font-bold text-base text-red-700">{error}</p>
                     </div>
-                    {!error && <div>
-                        <p className="font-bold text-base">{botName}</p>
+                    {!error && <div className="flex items-center">
+                        <div className="relative">
+                            <img src={`${(botId || 10)%5}.png`} className="rounded-full border" width='40px' height='40px' />
+                            <div className={`border rounded-full h-2 w-2 absolute bottom-0 right-0 ${online ? 'border-green-500 bg-green-500': 'border-red-500 bg-red-500'}`} />
+                        </div>
+                        <span className="font-bold text-base mx-2">{botName.toUpperCase()}</span>
                     </div>}
-                    <div>
-                        <p className="text-sm text-gray-500">Status: {status}</p>
-                    </div>
                 </div>
-                <div className="items-center flex">
+                <div className="items-center flex relative">
                 {showSettings && (
                         <div
                             id="dropdown"
-                            className="z-8 relative top-8 left-10 w-auto list-none divide-y divide-gray-100 rounded-lg bg-white text-base shadow dark:bg-gray-700"
+                            className="z-8 absolute top-8 right-2 w-auto list-none divide-y divide-gray-100 rounded-lg bg-white text-base shadow dark:bg-gray-700"
                         >
                             <ul className="py-2" aria-labelledby="dropdownButton">
                                 <li>
