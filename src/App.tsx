@@ -49,7 +49,7 @@ function App() {
         if(devMode === 'prod'){
 
           setBotDetailsLoading(true);
-          botDetails(url, botId).then(resp=>{
+          botDetails(url, botId).then((resp: any)=>{
             setBotDetailsLoading(false);
             if(resp.data){
               if(resp.data.data){
@@ -63,7 +63,7 @@ function App() {
               setBotError('Failed to fetch bot details')
               setBotStatus('INDETERMINATE');
             }
-          }).catch(e=>{
+          }).catch((e: Error)=>{
             setBotDetailsLoading(false);
             setBotError(e.message)
             setBotStatus('INDETERMINATE');
@@ -94,7 +94,7 @@ function App() {
     setFetching(true);
     setError(null);
     
-    sendMessage(url, messages, botState, botId, devMode).then(resp=>{
+    sendMessage(url, messages, botState, botId, devMode).then((resp: any)=>{
       console.log(resp)
       setFetching(false)
       if(resp.data.error){
@@ -106,7 +106,7 @@ function App() {
         }
         setMessages([...messages, newMessage])
       }
-    }).catch(error=>{
+    }).catch((error: Error)=>{
       setError(error.message);
       setFetching(false)
     })
