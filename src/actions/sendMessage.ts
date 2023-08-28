@@ -5,7 +5,7 @@ export function sendMessage(url: string, messages: IMessage[], state: {}, botId:
     let payload:any = {
         botId: btoa(botId.toString()),
         botData: {
-            messages: messages,
+            message_history: messages,
             state: state
         }
     }

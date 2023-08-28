@@ -96,7 +96,11 @@ function App() {
       if(resp.data.error){
         setError(resp.data.error)
       }else{
-        // setMessages(resp.data)
+        const newMessage: IMessage = {
+          role: 'assistant',
+          content: resp.data.data.new_message
+        }
+        setMessages([...messages, newMessage])
       }
     }).catch(error=>{
       setError(error.message);
