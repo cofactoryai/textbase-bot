@@ -29,6 +29,7 @@ function App() {
   const [botState, setBotState] = useState({});
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [botName, setBotName] = useState('')
+  const [botDetailsLoading, setBotDetailsLoading] = useState(false);
   const [botId, setBotId] = useState<number | null>(null)
   const [botStatus, setBotStatus] = useState('')
   const [fetching, setFetching] = useState(false);
@@ -47,7 +48,9 @@ function App() {
         const {url, devMode} = getAPIURL()
         if(devMode === 'prod'){
 
+          setBotDetailsLoading(true);
           botDetails(url, botId).then(resp=>{
+            setBotDetailsLoading(false);
             if(resp.data){
               if(resp.data.data){
                 setBotName(resp.data.data.name)
@@ -61,6 +64,7 @@ function App() {
               setBotStatus('INDETERMINATE');
             }
           }).catch(e=>{
+            setBotDetailsLoading(false);
             setBotError(e.message)
             setBotStatus('INDETERMINATE');
           })
@@ -127,7 +131,7 @@ function App() {
         </HelmetProvider>
       }
       <div className='w-full md:max-w-screen-md h-screen border rounded-2xl justify-between flex flex-col mb-2'>
-        <Header botName={botName} status={botStatus} restart={restart} error={botError} botId={botId} />
+        <Header botName={botName} status={botStatus} restart={restart} error={botError} botId={botId} loading={botDetailsLoading} />
         <MessageBox messages={messages} loading={fetching} error={error} botInfoMessage={botInfo} />
         <InputBar onMessage={onMessage} botName={botName} />
       </div>

@@ -19,7 +19,7 @@ export default function InputBar({onMessage, botName}: IProps){
             return
         }
         const message = {
-            'data_type': 'string',
+            'data_type': 'STRING',
             'value': value
         }
         onMessage(message)

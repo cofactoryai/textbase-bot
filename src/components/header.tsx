@@ -6,8 +6,9 @@ interface IProps {
     status: string
     restart: ()=>void
     error: string | null
+    loading: boolean
 }
-export default function Header({botName, status, restart, error, botId}: IProps){
+export default function Header({botName, status, restart, error, botId, loading}: IProps){
     const [showSettings, setShowSettings] = useState(false);
     const [online, setOnline] = useState(false);
     
@@ -26,11 +27,13 @@ export default function Header({botName, status, restart, error, botId}: IProps)
                     <div>
                         <p className="font-bold text-base text-red-700">{error}</p>
                     </div>
+                    
                     {!error && <div className="flex items-center">
                         <div className="relative">
                             <img src={`avatars/${(botId || 10)%5}.png`} className="rounded-full border" width='40px' height='40px' />
                             <div className={`border rounded-full h-2 w-2 absolute bottom-0 right-0 ${online ? 'border-green-500 bg-green-500': 'border-red-500 bg-red-500'}`} />
                         </div>
+                        {loading && <div><span className="font-bold text-base mx-2">Loading Bot...</span></div>}
                         <span className="font-bold text-base mx-2">{botName.toUpperCase()}</span>
                     </div>}
                 </div>
