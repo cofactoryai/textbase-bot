@@ -5,7 +5,7 @@ import InputBar from './components/inputBar';
 import MessageBox from './components/messageBox';
 import { IContent, IMessage } from './types/message';
 import Header from './components/header';
-import { botDetails, sendMessage } from './actions/sendMessage';
+import { botDetails, botDetailsV2, sendMessage } from './actions/sendMessage';
 import { getAPIURL } from './helpers';
 
 function generateRandomMessage(n:number): IMessage[]{
@@ -41,41 +41,40 @@ function App() {
     const path = window.location.pathname
     const pathParts = path.split('/')
     const {url, devMode} = getAPIURL()
-    if(pathParts[1] !== ""){
-      const botId = Number(atob(pathParts[1]))
-      if(!isNaN(botId)){
-        setBotId(botId);
+    if(pathParts.length == 3){
+      const userName = pathParts[1];
+      const botName = pathParts[2];
+      if(devMode === 'prod'){
 
-        if(devMode === 'prod'){
-
-          setBotDetailsLoading(true);
-          botDetails(url, botId).then((resp: any)=>{
-            setBotDetailsLoading(false);
-            if(resp.data){
-              if(resp.data.data){
-                setBotName(resp.data.data.name)
-                setBotStatus(resp.data.data.state);
-              }else{
-                setBotError(resp.data.error)
-                setBotStatus('INDETERMINATE');
-              }
+        setBotDetailsLoading(true);
+        botDetailsV2(url, botName, userName).then((resp: any)=>{
+          setBotDetailsLoading(false);
+          if(resp.data){
+            if(resp.data.data){
+              setBotName(resp.data.data.name)
+              setBotStatus(resp.data.data.state);
+              setBotId(resp.data.data.id);
             }else{
-              setBotError('Failed to fetch bot details')
+              setBotError(resp.data.error)
               setBotStatus('INDETERMINATE');
             }
-          }).catch((e: Error)=>{
-            setBotDetailsLoading(false);
-            setBotError(e.message)
+          }else{
+            setBotError('Failed to fetch bot details')
             setBotStatus('INDETERMINATE');
-          })
-        }else{
-          setBotName('Local Test')
-        }
+          }
+        }).catch((e: Error)=>{
+          setBotDetailsLoading(false);
+          setBotError(e.message)
+          setBotStatus('INDETERMINATE');
+        })
+      }else{
+        setBotName('Local Test')
       }
     }else if(devMode === 'local'){
       setBotId(123)
     }else{
       // Show Error
+      setBotError('Wrong URL');
     }
   }, [])
 

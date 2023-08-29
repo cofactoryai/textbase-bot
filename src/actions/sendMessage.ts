@@ -20,6 +20,30 @@ export function sendMessage(url: string, messages: IMessage[], state: {}, botId:
     return axios.post(`${url}/sendMessage`, payload)
 }
 
+export function sendMessageV2(url: string, messages: IMessage[], state: {}, botName: string, userName: string, devMode: string){
+    let payload:any = {
+        botName: botName,
+        username: userName,
+        botData: {
+            message_history: messages,
+            state: state
+        }
+    }
+    if(devMode === 'local'){
+        payload = {
+            data: {
+                message_history: messages,
+                state: state
+            }
+        }
+    }
+    return axios.post(`${url}/sendMessageV2`, payload)
+}
+
 export function botDetails(url: string, botId: number){
     return axios.get(`${url}/botDetails?botId=${btoa(botId.toString())}`)
+}
+
+export function botDetailsV2(url: string, botName: string, username: string){
+    return axios.get(`${url}/botDetails?botName=${botName}&username=${username}`)
 }
