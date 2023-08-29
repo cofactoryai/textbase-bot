@@ -11,8 +11,10 @@ export function sendMessage(url: string, messages: IMessage[], state: {}, botId:
     }
     if(devMode === 'local'){
         payload = {
-            message_history: messages,
-            state: state
+            data: {
+                message_history: messages,
+                state: state
+            }
         }
     }
     return axios.post(`${url}/sendMessage`, payload)

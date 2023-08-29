@@ -40,12 +40,12 @@ function App() {
   useEffect(()=>{
     const path = window.location.pathname
     const pathParts = path.split('/')
+    const {url, devMode} = getAPIURL()
     if(pathParts[1] !== ""){
       const botId = Number(atob(pathParts[1]))
       if(!isNaN(botId)){
         setBotId(botId);
 
-        const {url, devMode} = getAPIURL()
         if(devMode === 'prod'){
 
           setBotDetailsLoading(true);
@@ -72,6 +72,8 @@ function App() {
           setBotName('Local Test')
         }
       }
+    }else if(devMode === 'local'){
+      setBotId(123)
     }else{
       // Show Error
     }
