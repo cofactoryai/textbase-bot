@@ -102,11 +102,22 @@ function App() {
       if(resp.data.error){
         setError(resp.data.error)
       }else{
-        const newMessage: IMessage = {
-          role: 'assistant',
-          content: resp.data.data.new_message
+        
+        if(devMode === 'local'){
+          const newMessage: IMessage = {
+            role: 'assistant',
+            content: resp.data.new_message
+          }
+          setMessages([...messages, newMessage])
+
+        }else{
+          const newMessage: IMessage = {
+            role: 'assistant',
+            content: resp.data.data.new_message
+          }
+          setMessages([...messages, newMessage])
         }
-        setMessages([...messages, newMessage])
+        
       }
     }).catch((error: Error)=>{
       setError(error.message);
