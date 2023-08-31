@@ -137,8 +137,8 @@ function App() {
         <HelmetProvider>
           <Helmet>
             <title>Bot - {botName}</title>
-            <link rel="apple-touch-icon" href={`avatars/${botId % 5}.png`} />
-            <link rel="icon" href={`favicons/${botId % 5}.ico`} />
+            <link rel="apple-touch-icon" href={`/avatars/${botId % 5}.png`} />
+            <link rel="icon" href={`/favicons/${botId % 5}.ico`} />
           </Helmet>
         </HelmetProvider>
       }
