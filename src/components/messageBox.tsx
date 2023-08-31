@@ -26,7 +26,7 @@ export default function MessageBox({messages, loading, error, botInfoMessage}: I
     },[messages])
 
     return (
-        <div className="h-full border-y bg-gray-100 overflow-scroll">
+        <div className="h-full border-[#141414] border-y bg-black overflow-scroll">
             {
                 messages.map((message)=>{
                     return Message(message)

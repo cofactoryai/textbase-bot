@@ -131,7 +131,7 @@ function App() {
   }
 
   return (
-    <div className='flex justify-center'>
+    <div className='flex justify-center bg-gradient-to-r from-amber-500 to-pink-500'>
       {botName && botId &&
       
         <HelmetProvider>
@@ -142,7 +142,7 @@ function App() {
           </Helmet>
         </HelmetProvider>
       }
-      <div className='w-full md:max-w-screen-md h-screen border rounded-2xl justify-between flex flex-col mb-2'>
+      <div className='w-full md:max-w-screen-md h-screen py-10 border-[#141414] rounded-2xl justify-between flex flex-col mb-2'>
         <Header botName={botName} status={botStatus} restart={restart} error={botError} botId={botId} loading={botDetailsLoading} />
         <MessageBox messages={messages} loading={fetching} error={error} botInfoMessage={botInfo} />
         <InputBar onMessage={onMessage} botName={botName} />
