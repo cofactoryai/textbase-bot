@@ -26,7 +26,7 @@ export default function Header({botName, status, restart, error, botId, loading}
                 <div className="w-90">
                     <div className="flex items-center">
                         <div className="relative">
-                            <img src={`/avatars/${(botId || 10)%5}.png`} className="rounded-full border border-red-700" width='40px' height='40px' />
+                            <img alt="" src={`/avatars/${(botId || 10)%5}.png`} className="rounded-full border border-red-700" width='40px' height='40px' />
                             <div className={`border rounded-full h-2 w-2 absolute bottom-0 right-0 ${online ? 'border-green-500 bg-green-500': 'border-red-500 bg-red-500'}`} />
                         </div>
                         {error && <span className="font-bold text-base text-white mx-2">{error}</span>}

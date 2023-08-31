@@ -5,25 +5,25 @@ import InputBar from './components/inputBar';
 import MessageBox from './components/messageBox';
 import { IContent, IMessage } from './types/message';
 import Header from './components/header';
-import { botDetails, botDetailsV2, sendMessage } from './actions/sendMessage';
+import {  botDetailsV2, sendMessage } from './actions/sendMessage';
 import { getAPIURL } from './helpers';
 
-function generateRandomMessage(n:number): IMessage[]{
-  const messages = []
-  for(let i=0; i<n; i++){
-    messages.push({
-      role: i%2 === 0 ? 'user': 'assistant',
-      content: [
-        {
-          'data_type':'string',
-          'value': "How are you?How are you?How are you?How are you?How are you?How are you?How are you?How are you?How are you?How are you?"
-        }
-      ]
-    })
-  }
+// function generateRandomMessage(n:number): IMessage[]{
+//   const messages = []
+//   for(let i=0; i<n; i++){
+//     messages.push({
+//       role: i%2 === 0 ? 'user': 'assistant',
+//       content: [
+//         {
+//           'data_type':'string',
+//           'value': "How are you?How are you?How are you?How are you?How are you?How are you?How are you?How are you?How are you?How are you?"
+//         }
+//       ]
+//     })
+//   }
 
-  return messages
-}
+//   return messages
+// }
 
 function App() {
   const [botState, setBotState] = useState({});
@@ -41,7 +41,7 @@ function App() {
     const path = window.location.pathname
     const pathParts = path.split('/')
     const {url, devMode} = getAPIURL()
-    if(pathParts.length == 3){
+    if(pathParts.length === 3){
       const userName = pathParts[1];
       const botName = pathParts[2];
       if(devMode === 'prod'){
@@ -52,6 +52,7 @@ function App() {
           if(resp.data){
             if(resp.data.data){
               setBotName(resp.data.data.name)
+              setBotInfo(`Start Conversation with bot - ${resp.data.data.name}`)
               setBotStatus(resp.data.data.state);
               setBotId(resp.data.data.id);
             }else{
