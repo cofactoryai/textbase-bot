@@ -45,5 +45,5 @@ export function botDetails(url: string, botId: number){
 }
 
 export function botDetailsV2(url: string, botName: string, username: string){
-    return axios.get(`${url}/botDetails?botName=${botName}&username=${username}`)
+    return axios.get(`${url}/botDetailsV2?botName=${botName}&username=${username}`)
 }
