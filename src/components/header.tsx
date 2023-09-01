@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { getAPIURL } from "../helpers";
 
 interface IProps {
     botName: string
@@ -9,8 +10,10 @@ interface IProps {
     loading: boolean
 }
 export default function Header({botName, status, restart, error, botId, loading}: IProps){
+    const {devMode} = getAPIURL()
     const [showSettings, setShowSettings] = useState(false);
     const [online, setOnline] = useState(false);
+
     
     useEffect(()=>{
         if(status.toUpperCase() === 'DEPLOYED' || status.toUpperCase() === 'ACTIVE'){
@@ -27,7 +30,7 @@ export default function Header({botName, status, restart, error, botId, loading}
                     <div className="flex items-center">
                         <div className="relative">
                             <img alt="" src={`/avatars/${(botId || 10)%5}.png`} className="rounded-full border border-red-700" width='40px' height='40px' />
-                            <div className={`border rounded-full h-2 w-2 absolute bottom-0 right-0 ${online ? 'border-green-500 bg-green-500': 'border-red-500 bg-red-500'}`} />
+                            {devMode !== 'local' && <div className={`border rounded-full h-2 w-2 absolute bottom-0 right-0 ${online ? 'border-green-500 bg-green-500': 'border-red-500 bg-red-500'}`} />}
                         </div>
                         {error && <span className="font-bold text-base text-white mx-2">{error}</span>}
                         {loading && <div><span className="font-bold text-base text-white mx-2">Loading Bot...</span></div>}
