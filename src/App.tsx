@@ -109,13 +109,14 @@ function App() {
             content: resp.data.new_message
           }
           setMessages([...messages, newMessage])
-
+          setBotState(resp.data.state)
         }else{
           const newMessage: IMessage = {
             role: 'assistant',
             content: resp.data.data.new_message
           }
           setMessages([...messages, newMessage])
+          setBotState(resp.data.data.state)
         }
         
       }
