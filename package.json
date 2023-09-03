@@ -48,6 +48,7 @@
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@types/react-helmet": "^6.1.6",
+    "prettier": "^3.0.3",
     "tailwindcss": "^3.3.3"
   }
 }
