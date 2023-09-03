@@ -62,7 +62,7 @@ useEffect(() => {
       // Show Error
       setBotError('Wrong URL');
     }
-  }, []);
+  }, [])
 
   const onMessage = (message: IContent)=>{
     const currentBotVoice = botVoiceRef.current;
@@ -74,14 +74,14 @@ useEffect(() => {
     console.log("test");
     const userMessage: IMessage = {
       role: 'user',
-      content: [message],
-    };
+      content: [message]
+    }
 
     messages.push(userMessage);
-    setMessages([...messages]);
+    setMessages([...messages])
 
-    const { url, devMode } = getAPIURL();
-
+    const {url, devMode} = getAPIURL()
+    
     setFetching(true);
     setError(null);
     sendMessageV2(url, messages, botState, botName,currentBotVoice, username,devMode).then((resp: any)=>{
@@ -100,6 +100,7 @@ useEffect(() => {
             const audioUrl = resp.data.new_message[0].botAudio.URL;
             setBotAudioUrl(audioUrl);
           }
+          setMessages([...messages, newMessage])
         }
     }).catch((error: Error)=>{
       setError(error.message);
@@ -107,15 +108,16 @@ useEffect(() => {
     })
   }
 
-  const restart = () => {
-    setMessages([]);
+  const restart = ()=>{
+    setMessages([])
     setError(null);
-    setBotState({});
-  };
+    setBotState({})
+  }
 
   return (
-    <div className="flex justify-center bg-gradient-to-r from-amber-500 to-pink-500">
-      {botName && botId && (
+    <div className='flex justify-center bg-gradient-to-r from-amber-500 to-pink-500'>
+      {botName && botId &&
+      
         <HelmetProvider>
           <Helmet>
             <title>Bot - {botName}</title>
