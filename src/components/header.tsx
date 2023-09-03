@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getAPIURL } from "../helpers";
 import { getBotList } from "../actions/sendMessage";
+import { BotVoice } from "../App";
 
 interface IProps {
     botName: string
@@ -11,8 +12,13 @@ interface IProps {
     updateBotId: (id:number)=>void
     error: string | null
     loading: boolean
+    botAudioUrl: string | null
+    setBotAudioUrl: (url:null|string)=>void
+    botVoice: BotVoice
+    setBotVoice: (botVoice:BotVoice)=>void
 }
-export default function Header({botName, status, restart, error, botId, loading, updateBotName, updateBotId}: IProps){
+
+export default function Header({botName, status, restart, error, botId, loading, updateBotName, updateBotId, botAudioUrl, setBotAudioUrl, setBotVoice, botVoice}: IProps){
     const {devMode} = getAPIURL()
     const [showSettings, setShowSettings] = useState(false);
     const [online, setOnline] = useState(false);
@@ -20,9 +26,8 @@ export default function Header({botName, status, restart, error, botId, loading,
     const [selectedBot, setselectedBot] = useState({});
 
     useEffect(()=>{
-        const {url, devMode} = getAPIURL()
+        const {url} = getAPIURL()
         getBotList(url).then((resp:any)=>{
-            console.log(resp);
             if(!resp.data.error){
                 if(resp.data.data){
                     setBotList(resp.data.data);
@@ -61,6 +66,18 @@ export default function Header({botName, status, restart, error, botId, loading,
                         {error && <span className="font-bold text-base text-white mx-2">{error}</span>}
                         {loading && <div><span className="font-bold text-base text-white mx-2">Loading Bot...</span></div>}
                         {!error && <span className="font-bold text-base text-white mx-2">{botName.toUpperCase()}</span>}
+                        <div className="bg-white rounded-full">
+                            <button className={`px-4 py-2 font-bold  ${botVoice.allowToSpeak? 'text-black':'text-gray-300'}`} onClick={()=>{setBotVoice({...botVoice, allowToSpeak: !botVoice.allowToSpeak})}}>
+                                <span>Bot Voice</span>
+                            </button>
+                        </div>
+                        
+                        {botAudioUrl && (
+                            <audio controls autoPlay onEnded={() => setBotAudioUrl(null)}>
+                                <source src={botAudioUrl} type="audio/mpeg" />
+                                Your browser does not support the audio element.
+                            </audio>
+                        )}
                     </div>
                 </div>
                 <div className="items-center flex relative">

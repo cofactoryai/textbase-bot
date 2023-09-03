@@ -23,14 +23,16 @@ export function sendMessage(url: string, messages: IMessage[], state: {}, botId:
     return axios.post(`${url}/chat-with-llm`, payload)
 }
 
-export function sendMessageV2(url: string, messages: IMessage[], state: {}, botName: string, userName: string, devMode: string){
+export function sendMessageV2(url: string, messages: IMessage[], state: {}, botName: string, botVoice:any, userName: string, devMode: string){
+    console.log(botVoice);
     let payload:any = {
         botName: botName,
         username: userName,
         botData: {
             message_history: messages,
             state: state
-        }
+        },
+        botVoice
     }
     return axios.post(`${url}/sendMessageV2`, payload)
 }

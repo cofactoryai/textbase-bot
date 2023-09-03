@@ -1,29 +1,19 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {Helmet, HelmetProvider} from 'react-helmet-async';
 import './App.css';
 import InputBar from './components/inputBar';
 import MessageBox from './components/messageBox';
 import { IContent, IMessage } from './types/message';
 import Header from './components/header';
-import {  botDetailsV2, sendMessage, sendMessageV2 } from './actions/sendMessage';
+import {  botDetailsV2, sendMessageV2 } from './actions/sendMessage';
 import { getAPIURL } from './helpers';
 
-// function generateRandomMessage(n:number): IMessage[]{
-//   const messages = []
-//   for(let i=0; i<n; i++){
-//     messages.push({
-//       role: i%2 === 0 ? 'user': 'assistant',
-//       content: [
-//         {
-//           'data_type':'string',
-//           'value': "How are you?How are you?How are you?How are you?How are you?How are you?How are you?How are you?How are you?How are you?"
-//         }
-//       ]
-//     })
-//   }
-
-//   return messages
-// }
+export interface BotVoice {
+  lang: string;
+  source: string;
+  allowToSpeak: boolean;
+  // ...
+}
 
 function App() {
   const [botState, setBotState] = useState({});
@@ -31,21 +21,26 @@ function App() {
   const [botName, setBotName] = useState('bot')
   const [username, setUsername] = useState('zero')
   const [botDetailsLoading, setBotDetailsLoading] = useState(false);
-  const [botId, setBotId] = useState<number | null>(null)
+  const [botId, setBotId] = useState<number | null>(0)
   const [botStatus, setBotStatus] = useState('')
   const [fetching, setFetching] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [botError, setBotError] = useState<string | null>(null);
   const [botInfo, setBotInfo] = useState('Start Conversation with bot')
+  const [botVoice, setBotVoice] = useState<BotVoice>({"lang":"Salli","source":"ttsmp3","allowToSpeak":false});
+  const [botAudioUrl, setBotAudioUrl] = useState<string | null>(null);
+  
+  const botVoiceRef = useRef<BotVoice>({"lang":"Salli","source":"ttsmp3","allowToSpeak":false});
+
+useEffect(() => {
+  botVoiceRef.current = botVoice;
+}, [botVoice]);
 
   useEffect(()=>{
     const {url, devMode} = getAPIURL()
-    console.log(devMode);
     if(devMode === 'prod'){
       setBotDetailsLoading(true);
       botDetailsV2(url,botName, username).then((resp: any)=>{
-        console.log(resp);
-        console.log(resp.data);
         setBotDetailsLoading(false);
         if(resp.data){
             setBotName(resp.data.name)
@@ -70,11 +65,13 @@ function App() {
   }, [])
 
   const onMessage = (message: IContent)=>{
+    const currentBotVoice = botVoiceRef.current;
     console.log(message);
     console.log(botId);
-    if(!botId){
+    if(botId==null && botId!=0){
       return
     }
+    console.log("test");
     const userMessage: IMessage = {
       role: 'user',
       content: [message]
@@ -87,7 +84,7 @@ function App() {
     
     setFetching(true);
     setError(null);
-    sendMessageV2(url, messages, botState, botName, username,devMode).then((resp: any)=>{
+    sendMessageV2(url, messages, botState, botName,currentBotVoice, username,devMode).then((resp: any)=>{
       console.log(resp)
       setFetching(false)
       if(resp.data.error){
@@ -96,6 +93,12 @@ function App() {
           const newMessage: IMessage = {
             role: 'assistant',
             content: resp.data.new_message
+          }
+          console.log("message: "+newMessage.content[0].value);
+          // speak({ text: newMessage.content[0].value})
+          if (resp.data.new_message[0].botAudio && resp.data.new_message[0].botAudio.URL) {
+            const audioUrl = resp.data.new_message[0].botAudio.URL;
+            setBotAudioUrl(audioUrl);
           }
           setMessages([...messages, newMessage])
         }
@@ -124,9 +127,9 @@ function App() {
         </HelmetProvider>
       }
       <div className='w-full md:max-w-screen-md h-screen py-10 border-[#141414] rounded-2xl justify-between flex flex-col mb-2'>
-        <Header updateBotName={setBotName} updateBotId={setBotId} botName={botName} status={botStatus} restart={restart} error={botError} botId={botId} loading={botDetailsLoading} />
+        <Header updateBotName={setBotName} updateBotId={setBotId} botName={botName} status={botStatus} restart={restart} error={botError} botId={botId} loading={botDetailsLoading} botAudioUrl={botAudioUrl} setBotAudioUrl={setBotAudioUrl} setBotVoice={setBotVoice} botVoice={botVoice}/>
         <MessageBox messages={messages} loading={fetching} error={error} botInfoMessage={botInfo} />
-        <InputBar onMessage={onMessage} botName={botName} />
+        <InputBar onMessage={onMessage} botName={botName} botVoice={botVoice} />
       </div>
     </div>
   );
