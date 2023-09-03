@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { IContent } from '../types/message';
+import { DataType, IContent } from '../types/message';
 
 interface IProps {
   onMessage: (message: IContent) => void;
@@ -18,8 +18,8 @@ export default function InputBar({ onMessage, botName }: IProps) {
       return;
     }
     const message = {
-      data_type: 'STRING',
-      value: value,
+      data_type: DataType.string,
+      value: value
     };
     onMessage(message);
     setValue('');
