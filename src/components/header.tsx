@@ -1,18 +1,35 @@
 import { useEffect, useState } from "react";
 import { getAPIURL } from "../helpers";
+import { getBotList } from "../actions/sendMessage";
 
 interface IProps {
     botName: string
     botId: number | null
     status: string
     restart: ()=>void
+    updateBotName: (name:string)=>void
+    updateBotId: (id:number)=>void
     error: string | null
     loading: boolean
 }
-export default function Header({botName, status, restart, error, botId, loading}: IProps){
+export default function Header({botName, status, restart, error, botId, loading, updateBotName, updateBotId}: IProps){
     const {devMode} = getAPIURL()
     const [showSettings, setShowSettings] = useState(false);
     const [online, setOnline] = useState(false);
+    const [botsList, setBotList] = useState([]);
+    const [selectedBot, setselectedBot] = useState({});
+
+    useEffect(()=>{
+        const {url, devMode} = getAPIURL()
+        getBotList(url).then((resp:any)=>{
+            console.log(resp);
+            if(!resp.data.error){
+                if(resp.data.data){
+                    setBotList(resp.data.data);
+                }
+            }
+        })
+    },[])
 
     
     useEffect(()=>{
@@ -22,6 +39,15 @@ export default function Header({botName, status, restart, error, botId, loading}
             setOnline(false)
         }
     }, [status])
+
+    const handleBotItemClick = (bot:any,id:number) => {
+        console.log(bot);
+        updateBotName(bot.name);
+        updateBotId(id);
+        setselectedBot(bot);
+        setShowSettings(false); // Close the dropdown after selecting a bot
+        restart();
+    };
 
     return (
         <div className="h-20 bg-[#141414] rounded-t-2xl py-4 px-2">
@@ -43,6 +69,20 @@ export default function Header({botName, status, restart, error, botId, loading}
                             id="dropdown"
                             className="z-8 absolute top-8 right-2 w-auto list-none divide-y divide-gray-100 rounded-lg bg-white text-base shadow bg-black"
                         >
+                            <ul className="py-2" aria-labelledby="dropdownButton">
+                                {botsList.map((bot:any,idx:number) => (
+                                <li key={bot.id}>
+                                    <button
+                                    className={`block px-4 py-2 text-sm text-gray-200 hover:bg-[#141414] ${
+                                        selectedBot === bot.id ? "bg-black text-white" : "bg-white"
+                                    } hover:text-white`}
+                                    onClick={() => handleBotItemClick(bot,idx)}
+                                    >
+                                    {bot.name}
+                                    </button>
+                                </li>
+                                ))}
+                            </ul>
                             <ul className="py-2" aria-labelledby="dropdownButton">
                                 <li>
                                     <button

@@ -5,7 +5,7 @@ import InputBar from './components/inputBar';
 import MessageBox from './components/messageBox';
 import { IContent, IMessage } from './types/message';
 import Header from './components/header';
-import {  botDetailsV2, sendMessage } from './actions/sendMessage';
+import {  botDetailsV2, sendMessage, sendMessageV2 } from './actions/sendMessage';
 import { getAPIURL } from './helpers';
 
 // function generateRandomMessage(n:number): IMessage[]{
@@ -28,7 +28,8 @@ import { getAPIURL } from './helpers';
 function App() {
   const [botState, setBotState] = useState({});
   const [messages, setMessages] = useState<IMessage[]>([]);
-  const [botName, setBotName] = useState('')
+  const [botName, setBotName] = useState('bot')
+  const [username, setUsername] = useState('zero')
   const [botDetailsLoading, setBotDetailsLoading] = useState(false);
   const [botId, setBotId] = useState<number | null>(null)
   const [botStatus, setBotStatus] = useState('')
@@ -38,39 +39,28 @@ function App() {
   const [botInfo, setBotInfo] = useState('Start Conversation with bot')
 
   useEffect(()=>{
-    const path = window.location.pathname
-    const pathParts = path.split('/')
     const {url, devMode} = getAPIURL()
-    if(pathParts.length === 3){
-      const userName = pathParts[1];
-      const botName = pathParts[2];
-      if(devMode === 'prod'){
-
-        setBotDetailsLoading(true);
-        botDetailsV2(url, botName, userName).then((resp: any)=>{
-          setBotDetailsLoading(false);
-          if(resp.data){
-            if(resp.data.data){
-              setBotName(resp.data.data.name)
-              setBotInfo(`Start Conversation with bot - ${resp.data.data.name}`)
-              setBotStatus(resp.data.data.state);
-              setBotId(resp.data.data.id);
-            }else{
-              setBotError(resp.data.error)
-              setBotStatus('INDETERMINATE');
-            }
-          }else{
-            setBotError('Failed to fetch bot details')
-            setBotStatus('INDETERMINATE');
-          }
-        }).catch((e: Error)=>{
-          setBotDetailsLoading(false);
-          setBotError(e.message)
+    console.log(devMode);
+    if(devMode === 'prod'){
+      setBotDetailsLoading(true);
+      botDetailsV2(url,botName, username).then((resp: any)=>{
+        console.log(resp);
+        console.log(resp.data);
+        setBotDetailsLoading(false);
+        if(resp.data){
+            setBotName(resp.data.name)
+            setBotInfo(`Start Conversation with bot - ${resp.data.name}`)
+            setBotStatus(resp.data.state);
+            setBotId(resp.data.id);
+        }else{
+          setBotError('Failed to fetch bot details')
           setBotStatus('INDETERMINATE');
-        })
-      }else{
-        setBotName('Local Test')
-      }
+        }
+      }).catch((e: Error)=>{
+        setBotDetailsLoading(false);
+        setBotError(e.message)
+        setBotStatus('INDETERMINATE');
+      })
     }else if(devMode === 'local'){
       setBotId(123)
     }else{
@@ -80,6 +70,8 @@ function App() {
   }, [])
 
   const onMessage = (message: IContent)=>{
+    console.log(message);
+    console.log(botId);
     if(!botId){
       return
     }
@@ -95,30 +87,18 @@ function App() {
     
     setFetching(true);
     setError(null);
-    
-    sendMessage(url, messages, botState, botId, devMode).then((resp: any)=>{
+    sendMessageV2(url, messages, botState, botName, username,devMode).then((resp: any)=>{
       console.log(resp)
       setFetching(false)
       if(resp.data.error){
         setError(resp.data.error)
       }else{
-        
-        if(devMode === 'local'){
           const newMessage: IMessage = {
             role: 'assistant',
             content: resp.data.new_message
           }
           setMessages([...messages, newMessage])
-
-        }else{
-          const newMessage: IMessage = {
-            role: 'assistant',
-            content: resp.data.data.new_message
-          }
-          setMessages([...messages, newMessage])
         }
-        
-      }
     }).catch((error: Error)=>{
       setError(error.message);
       setFetching(false)
@@ -144,7 +124,7 @@ function App() {
         </HelmetProvider>
       }
       <div className='w-full md:max-w-screen-md h-screen py-10 border-[#141414] rounded-2xl justify-between flex flex-col mb-2'>
-        <Header botName={botName} status={botStatus} restart={restart} error={botError} botId={botId} loading={botDetailsLoading} />
+        <Header updateBotName={setBotName} updateBotId={setBotId} botName={botName} status={botStatus} restart={restart} error={botError} botId={botId} loading={botDetailsLoading} />
         <MessageBox messages={messages} loading={fetching} error={error} botInfoMessage={botInfo} />
         <InputBar onMessage={onMessage} botName={botName} />
       </div>
