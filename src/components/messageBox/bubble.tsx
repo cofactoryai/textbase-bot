@@ -24,7 +24,8 @@ export default function Bubble({ role, message, messageType }: IProps) {
                 : 'bg-[#141414] text-white'
             } p-3 rounded-2xl`}
           >
-            <ReactMarkdown children={message} remarkPlugins={[remarkGfm]} />
+            {messageType === 'IMAGE_URL' && <img src={message} alt={message} />}
+            {messageType === 'STRING' && <ReactMarkdown children={message} remarkPlugins={[remarkGfm]} />}
           </div>
         </div>
       </div>
