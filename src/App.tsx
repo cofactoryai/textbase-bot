@@ -95,8 +95,8 @@ function App() {
               role: 'assistant',
               content: resp.data.new_message,
             };
-            if(resp.sessionId && !sessionId){
-              setSessionId(resp.sessionId);
+            if(resp.session_id && !sessionId){
+              setSessionId(resp.session_id);
             }
             setBotState(resp.data.state)
             setMessages([...messages, newMessage]);
