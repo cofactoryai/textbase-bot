@@ -7,6 +7,7 @@ export function sendMessage(
   state: {},
   botId: number,
   devMode: string,
+  sessionId: string | null,
 ) {
   if (devMode === 'local') {
     const payload = {
@@ -24,6 +25,7 @@ export function sendMessage(
       message_history: messages,
       state: state,
     },
+    sessionId: sessionId
   };
   return axios.post(`${url}/sendMessage`, payload);
 }
