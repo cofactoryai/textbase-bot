@@ -66,3 +66,25 @@ export function botDetailsV2(url: string, botName: string, username: string) {
     `${url}/botDetailsV2?botName=${botName}&username=${username}`,
   );
 }
+
+
+export function upload(botId: Number, file: File, fileType: string):Promise<string>{
+  const url = 'https://us-central1-chat-agents.cloudfunctions.net/upload-multimedia'
+
+  let formData = new FormData();
+  formData.append('file', file);
+  formData.append('parent_path', 'user')
+  formData.append('bot_id', botId.toString())
+  formData.append('file_type', fileType)
+
+  return axios.post(url, formData, {
+    headers: {
+      'Content-Type': 'multipart/formdata'
+    }
+  }).then(resp=>{
+    return resp.data.image_url
+  }).catch(e=>{
+    console.log(e)
+    throw Error(e)
+  })
+}

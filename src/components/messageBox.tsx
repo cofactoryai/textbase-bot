@@ -8,6 +8,7 @@ import BotInfo from './messageBox/botInfo';
 interface IProps {
   messages: IMessage[];
   loading: boolean;
+  userLoading: boolean;
   error: string | null;
   botInfoMessage: string;
 }
@@ -28,6 +29,7 @@ function Message(message: IMessage) {
 export default function MessageBox({
   messages,
   loading,
+  userLoading,
   error,
   botInfoMessage,
 }: IProps) {
@@ -43,7 +45,8 @@ export default function MessageBox({
         return Message(message);
       })}
       {messages.length === 0 && <BotInfo infoMessage={botInfoMessage} />}
-      {loading && <Loader />}
+      {loading && <Loader role='bot' />}
+      {userLoading && <Loader role='user' />}
       {error && <ErrorBubble error={error} />}
       <div ref={elementRef} />
     </div>

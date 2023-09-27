@@ -5,7 +5,7 @@ import InputBar from './components/inputBar';
 import MessageBox from './components/messageBox';
 import { IContent, IMessage } from './types/message';
 import Header from './components/header';
-import { botDetailsV2, sendMessage } from './actions/sendMessage';
+import { botDetailsV2, sendMessage, upload } from './actions/sendMessage';
 import { getAPIURL } from './helpers';
 
 function App() {
@@ -13,9 +13,10 @@ function App() {
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [botName, setBotName] = useState('');
   const [botDetailsLoading, setBotDetailsLoading] = useState(false);
-  const [botId, setBotId] = useState<number | null>(null);
+  const [botId, setBotId] = useState<number | null>(1);
   const [botStatus, setBotStatus] = useState('');
   const [fetching, setFetching] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [botError, setBotError] = useState<string | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -66,8 +67,27 @@ function App() {
     }
   }, []);
 
+  const uploadFile = (file: File, fileType: string)=>{
+    if(!botId) {
+      setError("No Bot Id")
+      return null;
+    }
+
+    setUploading(true)
+    return upload(botId, file, fileType).then(url=>{
+      setUploading(false)
+      return url
+    })
+    .catch(e=>{
+      setUploading(false)
+      setBotError(e.message)
+      return null
+    })
+  }
+
   const onMessage = (message: IContent) => {
     if (!botId) {
+      setError("No Bot Id")
       return;
     }
     const userMessage: IMessage = {
@@ -145,10 +165,11 @@ function App() {
         <MessageBox
           messages={messages}
           loading={fetching}
+          userLoading={uploading}
           error={error}
           botInfoMessage={botInfo}
         />
-        <InputBar onMessage={onMessage} botName={botName} />
+        <InputBar onMessage={onMessage} botName={botName} uploadFile={uploadFile} />
       </div>
     </div>
   );
