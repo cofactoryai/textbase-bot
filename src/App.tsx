@@ -8,23 +8,6 @@ import Header from './components/header';
 import { botDetailsV2, sendMessage } from './actions/sendMessage';
 import { getAPIURL } from './helpers';
 
-// function generateRandomMessage(n:number): IMessage[]{
-//   const messages = []
-//   for(let i=0; i<n; i++){
-//     messages.push({
-//       role: i%2 === 0 ? 'user': 'assistant',
-//       content: [
-//         {
-//           'data_type':'string',
-//           'value': "How are you?How are you?How are you?How are you?How are you?How are you?How are you?How are you?How are you?How are you?"
-//         }
-//       ]
-//     })
-//   }
-
-//   return messages
-// }
-
 function App() {
   const [botState, setBotState] = useState({});
   const [messages, setMessages] = useState<IMessage[]>([]);
@@ -35,6 +18,7 @@ function App() {
   const [fetching, setFetching] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [botError, setBotError] = useState<string | null>(null);
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const [botInfo, setBotInfo] = useState('Start Conversation with bot');
 
   useEffect(() => {
@@ -99,7 +83,7 @@ function App() {
     setFetching(true);
     setError(null);
 
-    sendMessage(url, messages, botState, botId, devMode)
+    sendMessage(url, messages, botState, botId, devMode, sessionId)
       .then((resp: any) => {
         console.log(resp);
         setFetching(false);
@@ -111,6 +95,9 @@ function App() {
               role: 'assistant',
               content: resp.data.new_message,
             };
+            if(resp.session_id && !sessionId){
+              setSessionId(resp.session_id);
+            }
             setBotState(resp.data.state)
             setMessages([...messages, newMessage]);
           } else {
