@@ -41,8 +41,8 @@ export default function Bubble({ role, message, messageType }: IProps) {
             {messageType === 'IMAGE_URL' && <img src={message} alt={message} />}
             {messageType === 'FILE_URL' && <Document message={message} />
             }
-            {messageType === 'AUDIO_URL' && <audio src={message} />}
-            {messageType === 'VIDEO_URL' && <video src={message} />}
+            {messageType === 'AUDIO_URL' && <audio controls={true} src={message} />}
+            {messageType === 'VIDEO_URL' && <video autoPlay={true} controls={true} src={message} />}
             {messageType === 'STRING' && <ReactMarkdown children={message} remarkPlugins={[remarkGfm]} />}
           </div>
         </div>

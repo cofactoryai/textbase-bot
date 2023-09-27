@@ -32,7 +32,6 @@ export default function InputBar({ onMessage, botName, uploadFile }: IProps) {
       const file = files[0];
 
       uploadFile(file, type)?.then(url=>{
-        console.log(url)
         if(url){
 
           let dataType = 'IMAGE_URL'
@@ -46,6 +45,14 @@ export default function InputBar({ onMessage, botName, uploadFile }: IProps) {
           
           if(file.name.match(/\.(jpg|jpeg|png|gif|webp)$/i)){
             dataType = 'IMAGE_URL'
+          }
+
+          if(file.name.match(/\.(mp3|wav)$/i)){
+            dataType = 'AUDIO_URL'
+          }
+
+          if(file.name.match(/\.(webm|mp4|ogg)$/i)){
+            dataType = 'VIDEO_URL'
           }
 
           const message = {
