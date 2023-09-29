@@ -125,6 +125,9 @@ function App() {
               role: 'assistant',
               content: resp.data.data.new_message,
             };
+            if(resp.data.session_id && !sessionId){
+              setSessionId(resp.data.session_id);
+            }
             setBotState(resp.data.data.state)
             setMessages([...messages, newMessage]);
           }
