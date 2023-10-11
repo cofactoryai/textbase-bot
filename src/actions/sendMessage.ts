@@ -82,7 +82,7 @@ export function upload(botId: Number, file: File, fileType: string):Promise<stri
       'Content-Type': 'multipart/formdata'
     }
   }).then(resp=>{
-    return resp.data.image_url
+    return resp.data.url
   }).catch(e=>{
     console.log(e)
     throw Error(e)
