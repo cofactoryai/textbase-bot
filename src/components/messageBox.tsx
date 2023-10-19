@@ -40,7 +40,7 @@ export default function MessageBox({
   }, [messages]);
 
   return (
-    <div className="h-full border-[#141414] border-y bg-black overflow-scroll">
+    <div className="h-full border-[#141414] border-y bg-black overflow-scroll  container">
       {messages.map(message => {
         return Message(message);
       })}
