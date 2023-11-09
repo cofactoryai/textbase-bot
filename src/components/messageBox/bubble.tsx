@@ -37,6 +37,7 @@ export default function Bubble({ role, message, messageType }: IProps) {
                 ? 'bg-[#F5F5F5] text-black'
                 : 'bg-[#141414] text-white'
             } p-3 rounded-2xl`}
+            style={{ whiteSpace: 'pre-line' }}
           >
             {messageType === 'IMAGE_URL' && <img src={message} alt={message} />}
             {messageType === 'FILE_URL' && <Document message={message} />
